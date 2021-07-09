@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -78,6 +79,30 @@ public class MainActivity extends AppCompatActivity {
                 String lat = String.valueOf(location.getLatitude());
                 lat = lat.substring(0,6);
                 fetchdata(lat,lon);
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+                location.setText("Syncing ...");
+                weather.setText("Syncing ...");
+                details.setText("please wait ...");
+                ActivityCompat.requestPermissions( MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                location.setText("Syncing ...");
+                weather.setText("Syncing ...");
+                details.setText("please wait ...");
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+//                Log.i("provider",provider);
+                  ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+                  location.setText("-------");
+                  weather.setText("-------");
+                  details.setText("\n:(\n\nPlease allow location permission");
             }
         };
         if(Build.VERSION.SDK_INT<23) {
